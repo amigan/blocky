@@ -1,9 +1,12 @@
 package resolver
 
 import (
+	"fmt"
+
 	"github.com/0xERR0R/blocky/config"
 	"github.com/0xERR0R/blocky/model"
 	"github.com/miekg/dns"
+	"github.com/0xERR0R/blocky/log"
 )
 
 type EdeResolver struct {
@@ -24,7 +27,11 @@ func (r *EdeResolver) Resolve(request *model.Request) (*model.Response, error) {
 	}
 
 	if r.config.Enable {
-		addExtraReasoning(resp)
+		if resp == nil {
+			log.PrefixedLog("ede_debug").WithError(err).WithField("request", fmt.Sprintf("%+v", request)).Warn("response is nil")
+		} else {
+			addExtraReasoning(resp)
+		}
 	}
 
 	return resp, nil
